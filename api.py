@@ -7,7 +7,7 @@ import base64
 import io
 
 app = Flask(__name__)
-CORS(app, resources={r"/classify": {"origins": "*"}})
+CORS(app, resources={"*": {"origins": "*"}})
 
 interpreter, input_details, output_details, labels = None, None, None, None
 
@@ -51,6 +51,11 @@ def run_inference(image):
     return output_data
 
 
+@app.route("/", methods=["GET"])
+def hello():
+    return "Hello World!"
+
+
 # Flask route for image classification
 @app.route("/classify", methods=["POST"])
 def classify_image():
@@ -69,7 +74,6 @@ def classify_image():
 
         # Run inference
         predictions = run_inference(input_image)
-        print(predictions)
 
         # Get the top prediction
         top_prediction = np.argmax(predictions)
