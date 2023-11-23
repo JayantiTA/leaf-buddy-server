@@ -5,6 +5,7 @@ from PIL import Image
 import tensorflow as tf
 import base64
 import io
+import os
 
 app = Flask(__name__)
 CORS(app, resources={"*": {"origins": "*"}})
@@ -15,11 +16,13 @@ interpreter, input_details, output_details, labels = None, None, None, None
 # Load the TensorFlow Lite model
 def init(plant_name):
     global interpreter, input_details, output_details, labels
-    interpreter = tf.lite.Interpreter(model_path=f"models/{plant_name}.tflite")
+    path = f"{os.getcwd()}/models/{plant_name}.tflite"
+    print(path)
+    interpreter = tf.lite.Interpreter(model_path=path)
     interpreter.allocate_tensors()
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
-    label_path = f"models/{plant_name}.txt"
+    label_path = f"{os.getcwd()}/models/{plant_name}.txt"
     with open(label_path, "r") as f:
         labels = [line.strip() for line in f.readlines()]
 
