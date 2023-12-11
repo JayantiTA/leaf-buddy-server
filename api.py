@@ -17,7 +17,6 @@ interpreter, input_details, output_details, labels = None, None, None, None
 def init(plant_name):
     global interpreter, input_details, output_details, labels
     path = f"{os.getcwd()}/models/{plant_name}.tflite"
-    print(path)
     interpreter = tf.lite.Interpreter(model_path=path)
     interpreter.allocate_tensors()
     input_details = interpreter.get_input_details()
@@ -36,6 +35,8 @@ def preprocess_image(base64_image):
         # Decode base64 image and convert to NumPy array
         image_data = base64.b64decode(image_data)
         image = Image.open(io.BytesIO(image_data))
+        if base64_image.startswith("data:image/png;base64,"):
+            image = image.convert("RGB")
         image = image.resize(
             (input_details[0]["shape"][2], input_details[0]["shape"][1])
         )
